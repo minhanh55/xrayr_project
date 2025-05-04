@@ -3,6 +3,7 @@ package mydispatcher
 import (
 	"context"
 	"log"
+	"fmt"
 
 	"github.com/xtls/xray-core/common"
 	"github.com/xtls/xray-core/common/net"
@@ -31,20 +32,6 @@ type protocolSnifferWithMetadata struct {
 type Sniffer struct {
 	sniffer []protocolSnifferWithMetadata
 }
-
-// func safeSniffQUIC(c context.Context, b []byte) (SniffResult, error) {
-//     defer func() {
-//         if r := recover(); r != nil {
-//             log.Printf("Đã bắt lỗi: %v", r)
-//         }
-//     }()
-
-//     if len(b) > 2048 {
-//         b = b[:2048] // Cắt bớt dữ liệu nếu quá lớn
-//     }
-
-//     return quic.SniffQUIC(b)
-// }
 
 func safeSniffQUIC(c context.Context, b []byte) (SniffResult, error) {
     defer func() {
