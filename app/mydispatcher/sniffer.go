@@ -2,7 +2,6 @@ package mydispatcher
 
 import (
 	"context"
-	"log"
 	"fmt"
 
 	"github.com/xtls/xray-core/common"
@@ -31,26 +30,18 @@ type protocolSnifferWithMetadata struct {
 
 type Sniffer struct {
 	sniffer []protocolSnifferWithMetadata
-}
+} 
 
-func safeSniffQUIC(c context.Context, b []byte) (SniffResult, error) {
-    defer func() {
-        if r := recover(); r != nil {
-            log.Printf("Đã bắt lỗi: %v", r)
-        }
-    }()
-
-    // Kiểm tra độ dài của dữ liệu trước khi cắt
-    if len(b) > 2048 {
-        b = b[:2048] // Cắt bớt dữ liệu nếu quá lớn
-    }
-
-    // Kiểm tra xem slice b có đủ dữ liệu để xử lý không
-    if len(b) == 0 {
-        return nil, fmt.Errorf("Dữ liệu không hợp lệ")
-    }
-
-    return quic.SniffQUIC(b)
+func safeSniffQUIC(c context.Context, b []byte) (result SniffResult, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// Ghi log nếu cần thiết
+			// log.Printf("panic recovered in safeSniffQUIC: %v", r)
+			result = nil
+			err = fmt.Errorf("panic recovered in quic.SniffQUIC: %v", r)
+		}
+	}()
+	return quic.SniffQUIC(b)
 }
 
 
